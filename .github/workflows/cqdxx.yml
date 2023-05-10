@@ -1,0 +1,27 @@
+name: qndxx
+
+on:
+  push:
+    branches: [ main ]
+  schedule:
+    # utc时间每周二零点
+    - cron: '0 0 * * 2'
+  workflow_dispatch: {}
+
+jobs:
+  build:
+    name: qndxx
+    runs-on: ubuntu-latest
+    env:
+      OPENID: ${{secrets.OPENID}}
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+      - name: Export Env
+        run: |
+          if [[ "${{secrets.OPENID}}" != "" ]];then   echo "OPENID=${{secrets.OPENID}}" >> $GITHUB_ENV;  fi
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+      - name: run
+        run: python3 main.py
